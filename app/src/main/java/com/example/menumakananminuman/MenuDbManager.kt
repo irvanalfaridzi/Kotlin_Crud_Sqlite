@@ -14,7 +14,7 @@ class MenuDbManager {
     private val colHarga = "Harga"
     private val dbVersion = 1
 
-    private val CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS " + dbTable + " (" + colId + " INTEGER PRIMARY KEY," + colNama + " TEXT, " + colHarga + " TEXT);"
+    private val CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS " + dbTable + " (" + colId + " INTEGER PRIMARY KEY," + colNama + " TEXT, " + colHarga + " DOUBLE);"
     private var db: SQLiteDatabase? = null
 
     constructor(context: Context) {
