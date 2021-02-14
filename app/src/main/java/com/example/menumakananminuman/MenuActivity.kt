@@ -3,9 +3,9 @@ package com.example.menumakananminuman
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class NoteActivity : AppCompatActivity() {
+class MenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_note)
+        setContentView(R.layout.activity_menu)
     }
 }
