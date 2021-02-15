@@ -3,6 +3,7 @@ package com.example.menumakananminuman
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -71,13 +72,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.sorting -> {
                     if (clicked) {
-                        Toast.makeText(applicationContext, "Coba", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Discending", Toast.LENGTH_SHORT).show()
                         listMenu.sortByDescending { it.nama }
                         Log.d("Sorting", "onOptionsItemSelected: ${listMenu.joinToString()}")
                         menusAdapterView.notifyDataSetChanged();
                         clicked = false
                     } else {
-                        Toast.makeText(applicationContext, "Coba", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Ascending", Toast.LENGTH_SHORT).show()
                         listMenu.sortBy { it.nama }
                         Log.d("Sorting", "onOptionsItemSelected: ${listMenu.joinToString()}")
                         menusAdapterView.notifyDataSetChanged();
@@ -171,12 +172,18 @@ class MainActivity : AppCompatActivity() {
 
             vh.tvNama.text = mNote.nama
             vh.tvHarga.text = mNote.harga.toString()
-            Glide
-                .with(applicationContext)
-                .load(mNote.gambar)
-                .centerCrop()
-                .placeholder(R.drawable.gambar)
-                .into(vh.ivGambar);
+            if (mNote.gambar != "@drawable/gambar"){
+                Glide
+                    .with(applicationContext)
+                    .load(mNote.gambar)
+                    .centerCrop()
+                    .placeholder(R.drawable.gambar)
+                    .into(vh.ivGambar);
+            } else {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    vh.ivGambar.setImageDrawable(getDrawable(R.drawable.gambar))
+                }
+            }
 
             vh.ivEdit.setOnClickListener {
                 updateMenu(mNote)

@@ -3,6 +3,7 @@ package com.example.menumakananminuman
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_menu.*
 
 class MenuActivity : AppCompatActivity() {
     var id = 0
-    lateinit var fileUri:String
+    var fileUri: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
@@ -22,13 +23,16 @@ class MenuActivity : AppCompatActivity() {
             id = bundle.getInt("MainActId", 0)
             if (id != 0) {
                 edtNama.setText(bundle.getString("MainActNama"))
-                edtHarga.setText(bundle.getString("MainActHarga"))
-                Glide
-                    .with(applicationContext)
-                    .load(bundle.getString("MainActGambar"))
-                    .centerCrop()
-                    .placeholder(R.drawable.gambar)
-                    .into(icProfilePict);
+                edtHarga.setText(bundle.getDouble("MainActHarga").toString())
+                fileUri = bundle.getString("MainActGambar").toString()
+                if (fileUri != "@drawable/gambar"){
+                    Glide
+                        .with(applicationContext)
+                        .load(bundle.getString("MainActGambar"))
+                        .centerCrop()
+                        .placeholder(R.drawable.gambar)
+                        .into(icProfilePict);
+                }
             }
         } catch (ex: Exception) {
         }
@@ -38,6 +42,9 @@ class MenuActivity : AppCompatActivity() {
             var values = ContentValues()
             values.put("Nama", edtNama.text.toString())
             values.put("Harga", edtHarga.text.toString())
+            if (fileUri == null) {
+                fileUri = "@drawable/gambar"
+            }
             values.put("Gambar", fileUri)
 
             if (id == 0) {
