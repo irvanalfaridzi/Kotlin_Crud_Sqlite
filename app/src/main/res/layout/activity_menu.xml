@@ -8,6 +8,31 @@
     android:padding="15dp"
     tools:context=".MenuActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icProfilePict"
+            android:layout_width="111dp"
+            android:layout_height="111dp"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/gambar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btnPickImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_action_gambar"
+            app:layout_constraintEnd_toEndOf="@id/icProfilePict"
+            app:layout_constraintBottom_toBottomOf="@id/icProfilePict"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <EditText
         android:id="@+id/edtNama"
         android:layout_width="match_parent"

@@ -6,18 +6,20 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteQueryBuilder
 import android.widget.Toast
-class MenuDbManager {
+class MenuDbManager(context: Context) {
     private val dbName = "JSANotes"
     private val dbTable = "Notes"
     private val colId = "Id"
     private val colNama = "Nama"
     private val colHarga = "Harga"
+    private val colGambar = "Gambar"
     private val dbVersion = 1
 
-    private val CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS " + dbTable + " (" + colId + " INTEGER PRIMARY KEY," + colNama + " TEXT, " + colHarga + " DOUBLE);"
+    private val CREATE_TABLE_SQL =
+        "CREATE TABLE IF NOT EXISTS $dbTable ($colId INTEGER PRIMARY KEY,$colNama TEXT, $colHarga DOUBLE, $colGambar TEXT);"
     private var db: SQLiteDatabase? = null
 
-    constructor(context: Context) {
+    init {
         var dbHelper = DatabaseHelper(context)
         db = dbHelper.writableDatabase
     }
@@ -30,7 +32,7 @@ class MenuDbManager {
 
     fun queryAll(): Cursor {
 
-        return db!!.rawQuery("select * from " + dbTable, null)
+        return db!!.rawQuery("select * from $dbTable", null)
     }
 
     fun delete(selection: String, selectionArgs: Array<String>): Int {
@@ -53,13 +55,10 @@ class MenuDbManager {
         return cursor
     }
 
-    inner class DatabaseHelper : SQLiteOpenHelper {
+    inner class DatabaseHelper(context: Context) :
+        SQLiteOpenHelper(context, dbName, null, dbVersion) {
 
-        var context: Context? = null
-
-        constructor(context: Context) : super(context, dbName, null, dbVersion) {
-            this.context = context
-        }
+        var context: Context? = context
 
         override fun onCreate(db: SQLiteDatabase?) {
             db!!.execSQL(CREATE_TABLE_SQL)
@@ -67,7 +66,7 @@ class MenuDbManager {
         }
 
         override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-            db!!.execSQL("Drop table IF EXISTS " + dbTable)
+            db!!.execSQL("Drop table IF EXISTS $dbTable")
         }
     }
 }

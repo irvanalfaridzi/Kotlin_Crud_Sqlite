@@ -8,6 +8,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/sorting"
+        android:icon="@drawable/ic_baseline_sort_24"
+        android:title="Sort"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/searchMenu"
         android:icon="@drawable/search"
         android:title="Search"

@@ -10,18 +10,22 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_menu.*
 
 class MainActivity : AppCompatActivity() {
     private var listMenu = ArrayList<Menu>()
+    lateinit var menusAdapterView: MenuAdapter
+    var clicked: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         loadQueryAll()
 
-        var menuAdapter = MenuAdapter(this, listMenu)
-        lvMenu.adapter = menuAdapter
+        menusAdapterView = MenuAdapter(this, listMenu)
+        lvMenu.adapter = menusAdapterView
         lvMenu.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
             Toast.makeText(this, "Click on " + listMenu[position].nama, Toast.LENGTH_SHORT).show()
         }
@@ -65,6 +69,21 @@ class MainActivity : AppCompatActivity() {
                     var intent = Intent(this, MenuActivity::class.java)
                     startActivity(intent)
                 }
+                R.id.sorting -> {
+                    if (clicked) {
+                        Toast.makeText(applicationContext, "Coba", Toast.LENGTH_SHORT).show()
+                        listMenu.sortByDescending { it.nama }
+                        Log.d("Sorting", "onOptionsItemSelected: ${listMenu.joinToString()}")
+                        menusAdapterView.notifyDataSetChanged();
+                        clicked = false
+                    } else {
+                        Toast.makeText(applicationContext, "Coba", Toast.LENGTH_SHORT).show()
+                        listMenu.sortBy { it.nama }
+                        Log.d("Sorting", "onOptionsItemSelected: ${listMenu.joinToString()}")
+                        menusAdapterView.notifyDataSetChanged();
+                        clicked = true
+                    }
+                }
             }
         }
 
@@ -88,20 +107,21 @@ class MainActivity : AppCompatActivity() {
                 val id = cursor.getInt(cursor.getColumnIndex("Id"))
                 val nama = cursor.getString(cursor.getColumnIndex("Nama"))
                 val harga = cursor.getDouble(cursor.getColumnIndex("Harga"))
+                val gambar = cursor.getString(cursor.getColumnIndex("Gambar"))
 
-                listMenu.add(Menu(id, nama, harga))
+                listMenu.add(Menu(id, nama, harga, gambar))
 
             } while (cursor.moveToNext())
         }
 
-        var notesAdapter = MenuAdapter(this, listMenu)
-        lvMenu.adapter = notesAdapter
+        menusAdapterView = MenuAdapter(this, listMenu)
+        lvMenu.adapter = menusAdapterView
     }
 
     fun loadQuery(nama: String) {
 
         var dbManager = MenuDbManager(this)
-        val projections = arrayOf("Id", "Nama", "Harga")
+        val projections = arrayOf("Id", "Nama", "Harga", "Gambar")
         val selectionArgs = arrayOf(nama)
         val cursor = dbManager.query(projections, "Nama like ?", selectionArgs, "Nama")
         listMenu.clear()
@@ -111,8 +131,9 @@ class MainActivity : AppCompatActivity() {
                 val id = cursor.getInt(cursor.getColumnIndex("Id"))
                 val nama = cursor.getString(cursor.getColumnIndex("Nama"))
                 val harga = cursor.getDouble(cursor.getColumnIndex("Harga"))
+                val gambar = cursor.getString(cursor.getColumnIndex("Gambar"))
 
-                listMenu.add(Menu(id, nama, harga))
+                listMenu.add(Menu(id, nama, harga, gambar))
 
             } while (cursor.moveToNext())
         }
@@ -150,6 +171,12 @@ class MainActivity : AppCompatActivity() {
 
             vh.tvNama.text = mNote.nama
             vh.tvHarga.text = mNote.harga.toString()
+            Glide
+                .with(applicationContext)
+                .load(mNote.gambar)
+                .centerCrop()
+                .placeholder(R.drawable.gambar)
+                .into(vh.ivGambar);
 
             vh.ivEdit.setOnClickListener {
                 updateMenu(mNote)
@@ -183,18 +210,21 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("MainActId", menu.id)
         intent.putExtra("MainActNama", menu.nama)
         intent.putExtra("MainActHarga", menu.harga)
+        intent.putExtra("MainActGambar", menu.gambar)
         startActivity(intent)
     }
 
     private class ViewHolder(view: View?) {
         val tvNama: TextView
         val tvHarga: TextView
+        val ivGambar: ImageView
         val ivEdit: ImageView
         val ivDelete: ImageView
 
         init {
             this.tvNama = view?.findViewById(R.id.tvNama) as TextView
             this.tvHarga = view?.findViewById(R.id.tvHarga) as TextView
+            this.ivGambar = view?.findViewById(R.id.ivGambar) as ImageView
             this.ivEdit = view?.findViewById(R.id.ivEdit) as ImageView
             this.ivDelete = view?.findViewById(R.id.ivDelete) as ImageView
         }
